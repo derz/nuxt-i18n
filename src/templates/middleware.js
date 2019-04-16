@@ -2,10 +2,12 @@ import cookie from 'cookie'
 import Cookies from 'js-cookie'
 import middleware from '../middleware'
 
-middleware['i18n'] = async ({ app, req, res, route, store, redirect, isHMR }) => {
+middleware['i18n'] = async (context) => {
   if (isHMR) {
     return
   }
+
+  const { app, req, res, route, store, redirect, isHMR } = context;
 
   // Options
   const lazy = <%= options.lazy %>
@@ -83,7 +85,7 @@ middleware['i18n'] = async ({ app, req, res, route, store, redirect, isHMR }) =>
     // Lazy-loading enabled
     if (lazy) {
       const { loadLanguageAsync } = require('./utils')
-      const messages = await loadLanguageAsync(app, newLocale)
+      const messages = await loadLanguageAsync(context, newLocale)
       app.i18n.locale = newLocale
       app.i18n.onLanguageSwitched(oldLocale, newLocale)
       syncVuex(newLocale, messages)

@@ -4,16 +4,15 @@
  * @param  {String}   lang  Language code to load
  * @return {Promise}
  */
-export async function loadLanguageAsync (app, locale) {
+export async function loadLanguageAsync ({ app }, locale) {
   const LOCALE_CODE_KEY = '<%= options.LOCALE_CODE_KEY %>'
   const LOCALE_FILE_KEY = '<%= options.LOCALE_FILE_KEY %>'
-  const { i18n } = app;
 
-  if (!i18n.loadedLanguages) {
-    i18n.loadedLanguages = []
+  if (!app.i18n.loadedLanguages) {
+    app.i18n.loadedLanguages = []
   }
-  if (!i18n.loadedLanguages.includes(locale)) {
-    const langOptions = i18n.locales.find(l => l[LOCALE_CODE_KEY] === locale)
+  if (!app.i18n.loadedLanguages.includes(locale)) {
+    const langOptions = app.i18n.locales.find(l => l[LOCALE_CODE_KEY] === locale)
     if (langOptions) {
       const file = langOptions[LOCALE_FILE_KEY]
       if (file) {
@@ -22,8 +21,8 @@ export async function loadLanguageAsync (app, locale) {
           const module = await import(/* webpackChunkName: "lang-[request]" */ '~/<%= options.langDir %>' + file)
           const messages = module.default ? module.default : module
           const result = typeof messages === 'function' ? await Promise.resolve(messages(app)) : messages
-          i18n.setLocaleMessage(locale, result)
-          i18n.loadedLanguages.push(locale)
+          app.i18n.setLocaleMessage(locale, result)
+          app.i18n.loadedLanguages.push(locale)
           return result
         } catch (error) {
           console.error(error)
