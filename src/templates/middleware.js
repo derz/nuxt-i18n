@@ -3,11 +3,11 @@ import Cookies from 'js-cookie'
 import middleware from '../middleware'
 
 middleware['i18n'] = async (context) => {
+  const { app, req, res, route, store, redirect, isHMR } = context;
+
   if (isHMR) {
     return
   }
-
-  const { app, req, res, route, store, redirect, isHMR } = context;
 
   // Options
   const lazy = <%= options.lazy %>
